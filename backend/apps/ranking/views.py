@@ -2,7 +2,7 @@ from apps.common.models import Score
 from apps.common.views import BaseView
 from datetime import date
 from .serializers import GetRankingSerializer
-from django.db.models import Max, Window, F
+from django.db.models import Window, F
 from django.db.models.functions import Rank
 
 class GetRankingView(BaseView):

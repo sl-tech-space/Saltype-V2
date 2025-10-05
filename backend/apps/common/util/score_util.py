@@ -1,6 +1,5 @@
 from datetime import date
-from rest_framework.exceptions import ValidationError
-from apps.common.models import User, Lang, Diff, Score
+from apps.common.models import Lang, Diff, Score
 
 
 class ScoreUtil:

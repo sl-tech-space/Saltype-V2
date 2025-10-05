@@ -2,7 +2,6 @@ from apps.common.models import Score, User, Rank
 from django.db import transaction
 from django.db.models import Avg, Max
 from django.core.cache import cache
-from rest_framework.exceptions import ValidationError
 from .serializers import (
     UserRankSerializer,
     GetUserRankingSerializer,

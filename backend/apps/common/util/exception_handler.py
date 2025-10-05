@@ -32,7 +32,7 @@ class HandleExceptions:
                 return self._handle_error(
                     e, "リソースが見つかりませんでした", status.HTTP_404_NOT_FOUND
                 )
-            except Exception as e:
+            except Exception:
                 logger.exception("予期しないエラーが発生しました")
                 return Response(
                     {

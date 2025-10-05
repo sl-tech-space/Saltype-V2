@@ -4,10 +4,6 @@ from rest_framework.exceptions import ValidationError
 from apps.common.models import User
 from apps.common.serializers import BaseSerializer
 from django.core.validators import RegexValidator
-from django.core.cache import cache
-from django.utils import timezone
-from datetime import timedelta
-import uuid
 
 # 大文字、数字、記号を含む正規表現
 password_validator = RegexValidator(
