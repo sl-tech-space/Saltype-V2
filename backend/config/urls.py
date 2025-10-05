@@ -7,7 +7,6 @@ urlpatterns = [
     path("api/django/mistype/", include("apps.mistype.urls")),
     path("api/django/score/", include("apps.score.urls")),
     path("api/django/ranking/", include("apps.ranking.urls")),
-    path("api/django/contact/", include("apps.contact.urls")),
     path("api/django/user/", include("apps.user.urls")),
     path("api/django/textgenerate/", include("apps.textgenerate.urls")),
 ]

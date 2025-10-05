@@ -9,7 +9,6 @@ INSTALLED_APPS = [
     "apps.mistype",
     "apps.score",
     "apps.ranking",
-    "apps.contact",
     "apps.user",
     "apps.textgenerate",
     "django.contrib.admin",
