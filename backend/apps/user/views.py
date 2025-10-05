@@ -1,21 +1,10 @@
-from django.core.cache import cache
-from django.utils import timezone
-from datetime import timedelta
-from django.core.mail import send_mail
-from django.conf import settings
 from apps.common.models import User
-from django.template.loader import render_to_string
 from .serializers import (
-    PasswordResetSerializer,
-    PasswordResetConfirmSerializer,
-    PasswordResetSuccessNotificationSerializer,
     DeleteUserSerializer,
     UpdateUserSerializer,
-    ValidateTokenSerializer,
 )
 from apps.common.views import BaseView
 from apps.common.util.score_util import ScoreUtil
-import uuid
 
 
 class GetUsersView(BaseView):
