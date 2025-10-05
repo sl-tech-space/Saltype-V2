@@ -1,11 +1,11 @@
 from django.core.management.base import BaseCommand
 from django.core.mail import send_mail
 from django.conf import settings
-from apps.common.models import User, Score
+from apps.common.models import User
 from datetime import date
 from django.template.loader import render_to_string
 from apps.common.util.score_util import ScoreUtil
-from collections import defaultdict, OrderedDict
+from collections import OrderedDict
 
 
 class Command(BaseCommand):

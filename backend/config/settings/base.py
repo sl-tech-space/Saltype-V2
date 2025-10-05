@@ -129,3 +129,16 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
 
 # 認証で許可するメールドメイン
 ALLOWED_EMAIL_DOMAIN = os.getenv("ALLOWED_EMAIL_DOMAIN")
+
+# APSchedulerの設定
+SCHEDULER_CONFIG = {
+    "apscheduler.jobstores.default": {
+        "class": "apscheduler.jobstores.memory:MemoryJobStore"
+    },
+    "apscheduler.executors.processpool": {"type": "threadpool"},
+    "apscheduler.job_defaults.coalesce": "false",
+    "apscheduler.job_defaults.max_instances": "3",
+    "apscheduler.timezone": "Asia/Tokyo",
+}
+
+SCHEDULER_AUTOSTART = True

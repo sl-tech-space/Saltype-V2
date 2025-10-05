@@ -16,7 +16,6 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     build-essential \
     libpq-dev \
-    cron \
     gosu \
     gettext-base \
     tzdata \
@@ -30,11 +29,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # スクリプトを先にコピー
 COPY scripts/start.sh /start.sh
-COPY scripts/daily_scores.sh /app/scripts/daily_scores.sh
 COPY scripts/rotate_logs.sh /app/scripts/rotate_logs.sh
 RUN chmod 755 /start.sh && \
     mkdir -p /app/scripts && \
-    chmod 755 /app/scripts/daily_scores.sh && \
     chmod 755 /app/scripts/rotate_logs.sh
 
 # 残りのファイルをコピー
@@ -43,16 +40,10 @@ COPY . .
 RUN mkdir -p /app/staticfiles
 RUN python manage.py collectstatic --noinput
 
-# Cron設定
-COPY scripts/crontab /etc/cron.d/app-cron
-RUN chmod 0644 /etc/cron.d/app-cron
-
 # ユーザー設定
 RUN groupadd -r django && useradd -r -g django django && \
-    touch /app/logs/cron.log && \
     chown -R django:django /app && \
-    chown -R django:django /app/logs && \
-    chmod 644 /app/logs/cron.log
+    chown -R django:django /app/logs
 
 EXPOSE 8000
 
