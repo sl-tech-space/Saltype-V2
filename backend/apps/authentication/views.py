@@ -3,50 +3,8 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.conf import settings
-from .serializers import LoginSerializer, GoogleAuthSerializer
+from .serializers import GoogleAuthSerializer
 from apps.common.views import BaseView
-
-
-class LoginView(BaseView):
-    """
-    ユーザーがオリジナルフォームからログインするためのAPIビュークラス。
-    """
-
-    def post(self, request, *args, **kwargs):
-        return super().post(request, LoginSerializer, *args, **kwargs)
-
-    def handle_post_request(self, validated_data):
-        """
-        ログインリクエストを処理します。
-        バリデーションを通過したデータを用いてユーザーのトークンを取得または作成し、認証結果を返します。
-
-        Args:
-            validated_data (dict): バリデーションを通過したリクエストデータ。
-        Returns:
-            dict: 認証結果を含むレスポンスデータ。
-        """
-        user = validated_data["user"]
-        token = self.get_or_create_token(user)
-
-        return {
-            "status": "success",
-            "user_id": user.user_id,
-            "email": user.email,
-            "username": user.username,
-            "token": token.key,
-        }
-
-    def get_or_create_token(self, user):
-        """
-        ユーザーのトークンを取得または新規作成します。
-
-        Args:
-            user (User): 認証されたユーザーオブジェクト。
-        Returns:
-            Token: ユーザーのトークンオブジェクト。
-        """
-        token, _ = Token.objects.get_or_create(user=user)
-        return token
 
 
 class CheckTokenView(BaseView):

@@ -3,7 +3,7 @@ from django.utils import timezone
 from datetime import timedelta
 from django.core.mail import send_mail
 from django.conf import settings
-from apps.common.models import User, Rank
+from apps.common.models import User
 from django.template.loader import render_to_string
 from .serializers import (
     PasswordResetSerializer,
@@ -16,7 +16,6 @@ from .serializers import (
 from apps.common.views import BaseView
 from apps.common.util.score_util import ScoreUtil
 import uuid
-from django.urls import reverse
 
 
 class GetUsersView(BaseView):
@@ -172,158 +171,3 @@ class DeleteUserView(BaseView):
             "message": "ユーザーが削除されました。",
             "user_id": user_id,
         }
-
-
-class PasswordResetView(BaseView):
-    """
-    パスワードリセットリクエストを処理するビュークラス。
-    """
-
-    def post(self, request, *args, **kwargs):
-        return super().post(request, PasswordResetSerializer, *args, **kwargs)
-
-    def handle_post_request(self, validated_data):
-        """
-        POSTリクエストを処理し、パスワードリセット用のリンクをメールで送信します。
-        """
-        email = validated_data.get("email")
-        user = User.objects.get(email=email)
-        token = self.create_password_reset_token(user)
-        self.send_password_reset_email(user, token)
-
-        return {
-            "message": "パスワードリセット用のリンクが送信されました。",
-            "token": token,
-        }
-
-    def create_password_reset_token(self, user):
-        """
-        パスワードリセット用のトークンを生成し、キャッシュに保存します。
-        """
-        token = uuid.uuid4().hex
-        expiration_time = timezone.now() + timedelta(minutes=10)
-        cache.set(
-            token, {"user_id": user.user_id, "expires_at": expiration_time}, timeout=600
-        )
-        return token
-
-    def send_password_reset_email(self, user, token):
-        """
-        パスワードリセット用のURLをメールで送信します。
-        """
-        full_url = f"{settings.SITE_URL}{token}"
-
-        subject = "パスワードリセットのリクエスト"
-        html_message = render_to_string(
-            "password_reset_email.html", {"user": user, "full_url": full_url}
-        )
-
-        send_mail(
-            subject,
-            "",  # テキストメッセージは空にする
-            settings.EMAIL_HOST_USER,
-            [user.email],
-            html_message=html_message,
-        )
-
-
-class PasswordResetConfirmView(BaseView):
-    """
-    パスワードリセット確認を処理するビュークラス。
-    トークンと新しいパスワードを受け取り、パスワードリセットを実行します。
-    """
-
-    def post(self, request, *args, **kwargs):
-        return super().post(request, PasswordResetConfirmSerializer, *args, **kwargs)
-
-    def handle_post_request(self, validated_data):
-        """
-        POSTリクエストで新しいパスワードを設定します。
-        """
-        token = validated_data.get("token")
-        new_password = validated_data.get("new_password")
-
-        # トークンからユーザーを取得
-        user = self.get_user_from_token(token)
-
-        # 新しいパスワードを設定
-        user.set_password(new_password)
-        user.save()
-
-        # トークン無効化
-        self.invalidate_token(token)
-
-        # 試行回数をリセット
-        attempt_key = f"password_reset_attempts_{token}"
-        cache.delete(attempt_key)
-
-        return {"message": "パスワードがリセットされました。"}
-
-    def get_user_from_token(self, token):
-        """
-        トークンからユーザーを取得します。
-        """
-        token_data = cache.get(token)
-        if not token_data:
-            return None
-
-        return User.objects.get(user_id=token_data["user_id"])
-
-    def invalidate_token(self, token):
-        """
-        トークンを無効化します（キャッシュから削除）。
-        """
-        cache.delete(token)
-
-
-class PasswordResetSuccessNotificationView(BaseView):
-    """
-    パスワードリセット成功の通知メールを送信するビュークラス。
-    """
-
-    def post(self, request, *args, **kwargs):
-        return super().post(
-            request, PasswordResetSuccessNotificationSerializer, *args, **kwargs
-        )
-
-    def handle_post_request(self, validated_data):
-        """
-        パスワードリセット成功時に通知メールを送信します。
-        """
-        email = validated_data.get("email")
-        user = User.objects.get(email=email)
-        self.send_password_reset_success_email(user)
-        return {"message": "通知メールが送信されました。"}
-
-    def send_password_reset_success_email(self, user):
-        """
-        パスワードリセット成功の通知メールを送信します。
-        """
-        subject = "パスワードリセット完了"
-        html_message = render_to_string(
-            "password_reset_success_email.html",
-            {"user": user, "login_url": settings.LOGIN_URL},
-        )
-        send_mail(
-            subject,
-            "",  # テキストメッセージは空にする
-            settings.EMAIL_HOST_USER,
-            [user.email],
-            html_message=html_message,  # HTMLメッセージを指定
-        )
-
-
-class ValidateTokenView(BaseView):
-    """
-    トークンの有効性を検証するビュークラス。
-    """
-
-    def post(self, request, *args, **kwargs):
-        return super().post(
-            request, ValidateTokenSerializer, *args, **kwargs
-        )
-
-    def handle_post_request(self, validated_data):
-        # シリアライザーでバリデーション済みのデータを使用
-        user = validated_data.get("user")
-        return {"message": "トークンは有効です。"}
