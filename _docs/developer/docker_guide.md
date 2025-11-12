@@ -11,3 +11,5 @@ docker compose -f docker-compose.prod.yml build
 docker compose -f docker-compose.prod.yml build --no-cache
 docker compose -f docker-compose.prod.yml up -d
 ```
+
+docker-compose exec db psql -U saltype -d saltypedb

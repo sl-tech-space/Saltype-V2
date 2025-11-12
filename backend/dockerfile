@@ -5,6 +5,9 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     build-essential \
     libpq-dev \
+    cron \
+    mecab \
+    mecab-ipadic-utf8 \
     && rm -rf /var/lib/apt/lists/*
 
 # 作業ディレクトリを設定
@@ -17,6 +20,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # アプリケーションのコードをコピー
 COPY . .
 
+RUN mkdir -p /app/logs && \
+    chmod +x /app/scripts/dev_start.sh
+
 # アプリケーション用のユーザーを作成
 RUN useradd -m django && \
     chown -R django:django /app && \
@@ -25,5 +31,5 @@ RUN useradd -m django && \
 # django ユーザーに切り替え
 USER django
 
-# 開発サーバーを実行
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# 開発サーバーとスケジューラーを起動
+CMD ["bash", "/app/scripts/dev_start.sh"]
