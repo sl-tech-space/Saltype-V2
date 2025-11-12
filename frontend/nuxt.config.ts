@@ -15,14 +15,10 @@ export default defineNuxtConfig({
     "/analyze": { ssr: true }, // SSR
     "/ranking": { isr: 300 }, // ISR 5minutes
     "/ranking/:id": { isr: 300 }, // ISR 5minutes
-    "/contact": { ssr: false }, // CSR
     "/settings/screen": {
       ssr: false,
       prerender: false,
     },
-    "/settings/user": { ssr: false }, // CSR
-    "/settings/password/forgot": { ssr: false }, // CSR
-    "/settings/password/reset": { ssr: false }, // CSR
     "/admin": { ssr: false }, // CSR
     "/privacypolicy": {
       ssr: false,

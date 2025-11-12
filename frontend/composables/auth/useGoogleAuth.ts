@@ -52,6 +52,23 @@ export const useGoogleAuth = () => {
             );
 
             if (userInfo) {
+              const sanitizeUsername = (info: GoogleUserInfo) => {
+                const allowedPattern = /[^\p{L}\p{N}.@+\-_]/gu;
+                const normalize = (value: string | undefined | null) =>
+                  (value ?? "")
+                    .replace(/\s+/g, "")
+                    .replace(allowedPattern, "");
+
+                const baseFromName = normalize(info.name);
+                const baseFromEmail = normalize(info.email.split("@")[0]);
+                const raw = baseFromName || baseFromEmail;
+                const fallback = baseFromEmail || `user${Date.now()}`;
+
+                return (raw || fallback).slice(0, 15);
+              };
+
+              const username = sanitizeUsername(userInfo);
+
               const response = await fetch(
                 `${config.public.baseURL}/api/django/authentication/google-auth/`,
                 {
@@ -60,7 +77,7 @@ export const useGoogleAuth = () => {
                     "Content-Type": "application/json",
                   },
                   body: JSON.stringify({
-                    username: userInfo.name,
+                    username,
                     email: userInfo.email,
                   }),
                 }

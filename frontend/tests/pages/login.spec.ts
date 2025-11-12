@@ -2,7 +2,6 @@ import { mount } from "@vue/test-utils";
 import { describe, it, expect, vi } from "vitest";
 import LoginPage from "../../pages/login.vue";
 import AuthHeader from "../../components/organisms/auth/AuthHeader.vue";
-import LoginForm from "../../components/organisms/login/LoginForm.vue";
 import GoogleAuth from "../../components/organisms/login/GoogleAuth.vue";
 import { useAuthToken } from "../../composables/auth/useAuthToken";
 
@@ -29,7 +28,6 @@ describe("LoginPage", () => {
 
     // 必要なコンポーネントが存在することを確認
     expect(wrapper.findComponent(AuthHeader).exists()).toBe(true);
-    expect(wrapper.findComponent(LoginForm).exists()).toBe(true);
     expect(wrapper.findComponent(GoogleAuth).exists()).toBe(true);
 
     // ページのルート要素が正しいクラスを持つことを確認
@@ -45,8 +43,7 @@ describe("LoginPage", () => {
     const loginDiv = wrapper.find(".login");
     const children = loginDiv.element.children;
     expect(children[0].tagName.toLowerCase()).toBe("auth-header-stub");
-    expect(children[1].tagName.toLowerCase()).toBe("login-form-stub");
-    expect(children[2].tagName.toLowerCase()).toBe("google-auth-stub");
+    expect(children[1].tagName.toLowerCase()).toBe("google-auth-stub");
   });
 
   it("マウント時に認証トークンチェックが実行されること", () => {

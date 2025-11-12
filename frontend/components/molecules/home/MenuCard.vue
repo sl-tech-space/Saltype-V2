@@ -21,10 +21,7 @@ const navigateToRouteByParams = async (routeName: string, params: string) => {
 };
 
 const navigateToRanking = () => navigateToRoute("ranking");
-const navigateToAnalyze = () => navigateToRoute("analyze");
-const navigateToContact = () => navigateToRoute("contact");
 const navigateToScreenSetting = () => navigateToRoute("settings-screen");
-const navigateToUserSetting = () => navigateToRoute("settings-user");
 const navigateToUserAdmin = () => navigateToRoute("admin");
 const navigateToAiTyping = () => navigateToRouteByParams("typing-id", "ai");
 
@@ -34,10 +31,7 @@ const handleLogout = async () => {
 
 const menuItems = ref(useMenuItems({
     navigateToRanking,
-    navigateToAnalyze,
-    navigateToContact,
     navigateToScreenSetting,
-    navigateToUserSetting,
     navigateToUserAdmin,
     navigateToAiTyping
 }, isAdmin.value));
@@ -45,10 +39,7 @@ const menuItems = ref(useMenuItems({
 watchEffect(() => {
     menuItems.value = useMenuItems({
         navigateToRanking,
-        navigateToAnalyze,
-        navigateToContact,
         navigateToScreenSetting,
-        navigateToUserSetting,
         navigateToUserAdmin,
         navigateToAiTyping
     }, isAdmin.value);
