@@ -11,7 +11,7 @@ INSTALLED_APPS = [
     "apps.ranking",
     "apps.user",
     "apps.text_generation",
-    "apps.management",
+    "apps.management.apps.ManagementConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",

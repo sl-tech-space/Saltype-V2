@@ -144,6 +144,15 @@ class DjangoJobScheduler:
             replace_existing=True,
         )
 
+        self.scheduler.add_job(
+            func=self.run_django_command,
+            trigger=CronTrigger(hour=19, minute=0, timezone="Asia/Tokyo"),
+            args=(["send_daily_scores"], "send_daily_scores_job"),
+            id="send_daily_scores_job",
+            name="日次スコアメール送信ジョブ",
+            replace_existing=True,
+        )
+
         logger.info("スケジュールジョブを登録しました")
 
     def start(self) -> None:
@@ -170,6 +179,7 @@ def main() -> None:
     logger.info("  - AIテキスト生成ジョブ (generate_text_job) : 0,10,20,30,40,50分")
     logger.info("  - ひらがな変換ジョブ (convert_hiragana_job) : 5,15,25,35,45,55分")
     logger.info("  - テキストペア分割ジョブ (partition_textpairs) : 毎日 2:00")
+    logger.info("  - 日次スコアメール送信ジョブ (send_daily_scores_job) : 毎日 19:00")
 
     logger.info("スケジューラーの稼働を開始します…")
     scheduler.start()
