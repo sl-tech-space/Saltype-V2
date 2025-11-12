@@ -19,28 +19,13 @@ export function useMenuItems(
       },
       {
         text: "分析情報",
-        actionKey: "navigateToAnalyze",
-        path: "M200-120q-33 0-56.5-23.5T120-200v-640h80v640h640v80H200Zm40-120v-360h160v360H240Zm200 0v-560h160v560H440Zm200 0v-200h160v200H640Z",
-      },
-      {
-        text: "分析ツール",
         actionKey: "navigateToAnalyzeTool",
         path: "M160-200h160v-320H160v320Zm240 0h160v-560H400v560Zm240 0h160v-240H640v240ZM80-120v-480h240v-240h320v320h240v400H80Z",
-      },
-      {
-        text: "ご要望",
-        actionKey: "navigateToContact",
-        path: "m720-160-56-56 63-64H560v-80h167l-63-64 56-56 160 160-160 160ZM160-280q-33 0-56.5-23.5T80-360v-400q0-33 23.5-56.5T160-840h520q33 0 56.5 23.5T760-760v204q-10-2-20-3t-20-1q-10 0-20 .5t-20 2.5v-147L416-520 160-703v343h323q-2 10-2.5 20t-.5 20q0 10 1 20t3 20H160Zm58-480 198 142 204-142H218Zm-58 400v-400 400Z",
       },
       {
         text: "画面設定",
         actionKey: "navigateToScreenSetting",
         path: "M320-120v-80h80v-80H160q-33 0-56.5-23.5T80-360v-400q0-33 23.5-56.5T160-840h640q33 0 56.5 23.5T880-760v400q0 33-23.5 56.5T800-280H560v80h80v80H320ZM160-360h640v-400H160v400Zm0 0v-400 400Z",
-      },
-      {
-        text: "ユーザ設定",
-        actionKey: "navigateToUserSetting",
-        path: "M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z",
       },
     ];
 
@@ -60,24 +45,6 @@ export function useMenuItems(
 
     return items;
   });
-
-  /**
-   * ユーザ設定画面メニュー項目
-   */
-  const userSettingMenuItems = ref([
-    {
-      text: "ユーザ情報",
-      actionKey: "slideToUserInfo",
-    },
-    {
-      text: "ユーザ名変更",
-      actionKey: "slideToUpdateUserName",
-    },
-    {
-      text: "パスワード変更",
-      actionKey: "slideToUpdatePassword",
-    },
-  ]);
 
   /**
    * 画面設定画面項目
@@ -109,7 +76,6 @@ export function useMenuItems(
 
   return {
     homeMenuItems,
-    userSettingMenuItems,
     screenSettingMenuItems,
     getAction,
   };
