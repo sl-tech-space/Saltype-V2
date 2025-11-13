@@ -16,6 +16,7 @@ google-auth-oauthlib==1.2.2
 google-generativeai==0.8.5
 gunicorn==23.0.0
 idna==3.10
+mecab-python3==1.0.6
 oauthlib==3.2.2
 psycopg2-binary==2.9.10
 python-dotenv==1.1.0

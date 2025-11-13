@@ -16,10 +16,13 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     build-essential \
     libpq-dev \
+    libmecab-dev \
     gosu \
     gettext-base \
     tzdata \
     gzip \
+    mecab \
+    mecab-ipadic-utf8 \
     && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
     && rm -rf /var/lib/apt/lists/*
 
