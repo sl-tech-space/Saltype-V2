@@ -11,6 +11,10 @@ RUN apt-get update && \
     mecab-ipadic-utf8 \
     && rm -rf /var/lib/apt/lists/*
 
+# MeCabの設定ファイルのシンボリックリンクを作成
+RUN mkdir -p /usr/local/etc && \
+    ln -sf /etc/mecabrc /usr/local/etc/mecabrc || true
+
 # 作業ディレクトリを設定
 WORKDIR /app
 
