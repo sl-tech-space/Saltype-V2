@@ -7,7 +7,10 @@ from dotenv import load_dotenv
 from .base import *
 
 # .envを読み込む
-env_path = Path(__file__).resolve().parent.parent / ".env"
+# プロジェクトルートの.envを読み込む
+# __file__ = backend/config/settings/__init__.py
+# parent.parent.parent.parent = プロジェクトルート/
+env_path = Path(__file__).resolve().parent.parent.parent.parent / ".env"
 load_dotenv(env_path)
 
 # 環境変数を取得
