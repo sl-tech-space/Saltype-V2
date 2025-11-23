@@ -119,7 +119,7 @@ class DjangoJobScheduler:
         """スケジュールジョブを登録する。"""
         self.scheduler.add_job(
             func=self.run_django_command,
-            trigger=CronTrigger(minute="0,10,20,30,40,50"),
+            trigger=CronTrigger(minute="0,20,40"),
             args=(["generate_text_job"], "generate_text_job"),
             id="generate_text_job",
             name="AIテキスト生成ジョブ",
@@ -128,10 +128,19 @@ class DjangoJobScheduler:
 
         self.scheduler.add_job(
             func=self.run_django_command,
-            trigger=CronTrigger(minute="5,15,25,35,45,55"),
+            trigger=CronTrigger(minute="10,30,50"),
             args=(["convert_hiragana_job"], "convert_hiragana_job"),
             id="convert_hiragana_job",
             name="ひらがな変換ジョブ",
+            replace_existing=True,
+        )
+
+        self.scheduler.add_job(
+            func=self.run_django_command,
+            trigger=CronTrigger(minute="5,25,45"),
+            args=(["generate_english_text_job"], "generate_english_text_job"),
+            id="generate_english_text_job",
+            name="英語AIテキスト生成ジョブ",
             replace_existing=True,
         )
 
@@ -178,6 +187,9 @@ def main() -> None:
     logger.info("設定済みジョブ:")
     logger.info("  - AIテキスト生成ジョブ (generate_text_job) : 0,10,20,30,40,50分")
     logger.info("  - ひらがな変換ジョブ (convert_hiragana_job) : 5,15,25,35,45,55分")
+    logger.info(
+        "  - 英語AIテキスト生成ジョブ (generate_english_text_job) : 2,12,22,32,42,52分"
+    )
     logger.info("  - テキストペア分割ジョブ (partition_textpairs) : 毎日 2:00")
     logger.info("  - 日次スコアメール送信ジョブ (send_daily_scores_job) : 毎日 19:00")
 

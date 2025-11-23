@@ -7,42 +7,47 @@ import yaml
 from django.conf import settings
 from django.db import transaction
 
-from apps.text_generation.models import TextPair
+from apps.text_generation.models import TextPair, EnglishText
 
 logger = logging.getLogger("app")
 
 
 class TextGenerator:
     """
-    Google Generative AI を利用してタイピング用の文章を生成し、text_pairs テーブルに保存する。
+    Google Generative AI を利用してタイピング用の文章を生成し、DBに保存する。
     """
 
     PROMPT_KEY = "typing_prompt"
+    ENGLISH_PROMPT_KEY = "typing_english_prompt"
 
-    def __init__(self) -> None:
+    def __init__(self, language="japanese") -> None:
         if not settings.API_KEY:
             raise ValueError("API_KEY が設定されていません。")
         if not settings.AI_MODEL:
             raise ValueError("AI_MODEL が設定されていません。")
 
+        self.language = language
         genai.configure(api_key=settings.API_KEY)
         self.model = genai.GenerativeModel(settings.AI_MODEL)
         self.prompt = self._load_prompt()
 
     def _load_prompt(self) -> str:
         """
-        プロンプト YAML を読み込み、typing_prompt を取得する。
+        プロンプト YAML を読み込み、対応するプロンプトを取得する。
         """
         prompts_path = Path(__file__).resolve().parent / "prompts.yaml"
         if not prompts_path.exists():
-            raise FileNotFoundError(f"プロンプトファイルが見つかりません: {prompts_path}")
+            raise FileNotFoundError(
+                f"プロンプトファイルが見つかりません: {prompts_path}"
+            )
 
         with prompts_path.open("r", encoding="utf-8") as f:
             prompts = yaml.safe_load(f)
 
-        prompt = prompts.get(self.PROMPT_KEY)
+        key = self.ENGLISH_PROMPT_KEY if self.language == "english" else self.PROMPT_KEY
+        prompt = prompts.get(key)
         if not prompt:
-            raise KeyError(f"プロンプトファイルにキー '{self.PROMPT_KEY}' が存在しません。")
+            raise KeyError(f"プロンプトファイルにキー '{key}' が存在しません。")
         return prompt
 
     def _parse_sentences(self, response_text: str) -> List[str]:
@@ -50,9 +55,7 @@ class TextGenerator:
         生成結果を行単位に分割し、空行を除外する。
         """
         sentences = [
-            line.strip()
-            for line in response_text.splitlines()
-            if line.strip()
+            line.strip() for line in response_text.splitlines() if line.strip()
         ]
         return sentences
 
@@ -76,17 +79,26 @@ class TextGenerator:
                 return {"error": error_message}
 
             with transaction.atomic():
-                TextPair.objects.bulk_create(
-                    [
-                        TextPair(kanji=sentence, hiragana="", is_converted=False)
-                        for sentence in sentences
-                    ]
-                )
+                if self.language == "english":
+                    EnglishText.objects.bulk_create(
+                        [EnglishText(content=sentence) for sentence in sentences]
+                    )
+                else:
+                    TextPair.objects.bulk_create(
+                        [
+                            TextPair(
+                                kanji=sentence,
+                                hiragana="",
+                                is_converted=False,
+                            )
+                            for sentence in sentences
+                        ]
+                    )
 
             logger.info("AI テキスト生成が完了しました: %s 件", len(sentences))
             return {"sentences": sentences}
         except Exception as exc:  # pylint: disable=broad-except
-            logger.error("AI テキスト生成でエラーが発生しました: %s", exc, exc_info=True)
+            logger.error(
+                "AI テキスト生成でエラーが発生しました: %s", exc, exc_info=True
+            )
             return {"error": str(exc)}
-
-

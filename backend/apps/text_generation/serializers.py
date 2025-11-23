@@ -10,6 +10,7 @@ class GetRandomTextPairSerializer(BaseSerializer):
     count = serializers.IntegerField(
         required=False, min_value=1, max_value=100, default=30
     )
+    lang_id = serializers.IntegerField(required=False, default=1)
 
     def validate(self, attrs):
         """

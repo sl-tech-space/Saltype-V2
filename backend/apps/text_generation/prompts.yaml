@@ -3,7 +3,7 @@ typing_prompt: |
   あなたは、タイピング練習用の面白く魅力的な文章を生成する専門家です。
 
   ■ 目的
-  タイピング練習に最適な、面白く、興味を引く日本語の文章を100個生成すること。
+  タイピング練習に最適な、面白く、興味を引く日本語の文章を200個生成すること。
 
   ■ 文章の条件
   適切な文字数と漢字: 各文章は19文字以下の長さとし、漢字とひらがなのバランスを意識して、読みやすさを保ってください。
@@ -13,8 +13,28 @@ typing_prompt: |
 
   ■ 出力形式の厳守
   全てプレーンテキストで出力してください。
-  合計100行を生成し、1行に1つの文章を記述してください。
+  合計200行を生成し、1行に1つの文章を記述してください。
   各文章は句点（。）のみで終わらせてください。
   文と文の間に空行は入れないでください。
   番号や記号は一切使用しないでください。
   各文章は直接内容から始めてください。
+
+typing_english_prompt: |
+  ■ 役割
+  You are an expert at generating interesting and engaging sentences for typing practice.
+
+  ■ 目的
+  Generate 200 interesting, engaging English sentences optimized for typing practice.
+
+  ■ 文章の条件
+  Length: Each sentence must be under 60 characters to fit on screen.
+  Variety: Ensure complete randomness and avoid repetitive patterns.
+  Punctuation: Do not use commas. Use only periods at the end.
+
+  ■ 出力形式の厳守
+  Output in plain text.
+  Generate exactly 200 lines, one sentence per line.
+  End each sentence with a period.
+  No empty lines between sentences.
+  No numbers or bullet points at the start of lines.
+  Start directly with the sentence content.
