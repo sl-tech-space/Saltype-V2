@@ -44,7 +44,6 @@ class InsertScoreView(BaseView):
         """
         user_id = validated_data.get("user_id")
         lang_id = validated_data.get("lang_id")
-        diff_id = validated_data.get("diff_id")
         typing_count = validated_data.get("typing_count")
         accuracy = validated_data.get("accuracy")
 
@@ -52,7 +51,7 @@ class InsertScoreView(BaseView):
         calculated_score = self.calculate_score(typing_count, accuracy)
 
         # 最高スコア判定
-        is_highest = self.is_highest_score(user_id, lang_id, diff_id, calculated_score)
+        is_highest = self.is_highest_score(user_id, lang_id, calculated_score)
 
         # 挑戦結果のランクを決定
         rank_name = self.determine_rank(typing_count)
@@ -69,7 +68,6 @@ class InsertScoreView(BaseView):
         score_data = self.insert_score(
             user_id,
             lang_id,
-            diff_id,
             calculated_score,
             typing_count,
             accuracy,
@@ -86,7 +84,6 @@ class InsertScoreView(BaseView):
         self,
         user_id: int,
         lang_id: int,
-        diff_id: int,
         calculated_score: float,
         typing_count: int,
         accuracy: float,
@@ -99,7 +96,6 @@ class InsertScoreView(BaseView):
         Args:
             user_id (int): ユーザーID。
             lang_id (int): 言語ID。
-            diff_id (int): 難易度ID。
             calculated_score (float): 計算されたスコア。
             typing_count (int): タイピング数。
             accuracy (float): 正確度。
@@ -109,7 +105,6 @@ class InsertScoreView(BaseView):
         return Score.objects.create(
             user_id=user_id,
             lang_id=lang_id,
-            diff_id=diff_id,
             score=calculated_score,
             typing_count=typing_count,
             accuracy=accuracy,
@@ -145,7 +140,7 @@ class InsertScoreView(BaseView):
         return "メンバー"
 
     def is_highest_score(
-        self, user_id: int, lang_id: int, diff_id: int, score: int
+        self, user_id: int, lang_id: int, score: int
     ) -> bool:
         """
         ユーザーの最高スコアを取得し、提供されたスコアと比較します。
@@ -154,12 +149,11 @@ class InsertScoreView(BaseView):
             score (int): 提供されたスコア。
             user_id (int): ユーザーID。
             lang_id (int): 言語ID。
-            diff_id (int): 難易度ID。
         Returns:
             bool: 最高スコアの場合はTrue、それ以外はFalse。
         """
         highest_score = Score.objects.filter(
-            user_id=user_id, lang_id=lang_id, diff_id=diff_id
+            user_id=user_id, lang_id=lang_id
         ).aggregate(Max("score"))["score__max"]
 
         return highest_score is None or score > highest_score
@@ -197,37 +191,34 @@ class GetScoreView(BaseView):
         action = validated_data.get("action")
         user_id = validated_data.get("user_id")
         lang_id = validated_data.get("lang_id")
-        diff_id = validated_data.get("diff_id")
 
         if action == "get_average_score":
-            average_score = self.get_average_score(user_id, lang_id, diff_id)
+            average_score = self.get_average_score(user_id, lang_id)
             return {
                 "status": "success",
                 "average_score": round(average_score) if average_score else 0,
             }
 
         elif action == "get_past_scores":
-            past_scores = self.get_past_scores(user_id, lang_id, diff_id)
+            past_scores = self.get_past_scores(user_id, lang_id)
             return {"status": "success", "scores": past_scores}
 
-    def get_average_score(self, user_id: int, lang_id: int, diff_id: int) -> float:
+    def get_average_score(self, user_id: int, lang_id: int) -> float:
         """
-        特定のユーザー、言語、難易度に基づく平均スコアを計算します。
+        特定のユーザー、言語に基づく平均スコアを計算します。
 
         Args:
             user_id (int): ユーザーID。
             lang_id (int): 言語ID。
-            diff_id (int): 難易度ID。
         Returns:
             float: 計算された平均スコア。
         """
         return Score.objects.filter(
             user_id=user_id,
             lang_id=lang_id,
-            diff_id=diff_id,
         ).aggregate(Avg("score"))["score__avg"]
 
-    def get_past_scores(self, user_id: int, lang_id: int, diff_id: int) -> list:
+    def get_past_scores(self, user_id: int, lang_id: int) -> list:
         """
         ユーザーの過去のスコアを取得します。
         指定された条件に合致する過去のスコアをリストとして返します。
@@ -235,14 +226,12 @@ class GetScoreView(BaseView):
         Args:
             user_id (int): ユーザーID。
             lang_id (int): 言語ID。
-            diff_id (int): 難易度ID。
         Returns:
             list: ユーザーの過去スコアのリスト。
         """
         scores = Score.objects.filter(
             user_id=user_id,
             lang_id=lang_id,
-            diff_id=diff_id,
         ).order_by("-created_at")
         return [score.score for score in scores]
 
@@ -268,14 +257,13 @@ class GetUserRankingView(BaseView):
         """
         user_id = validated_data.get("user_id")
         lang_id = validated_data.get("lang_id")
-        diff_id = validated_data.get("diff_id")
         score = validated_data.get("score")
 
-        ranking_position = self.get_ranking_position(score, user_id, lang_id, diff_id)
+        ranking_position = self.get_ranking_position(score, user_id, lang_id)
         return {"status": "success", "ranking_position": ranking_position}
 
     def get_ranking_position(
-        self, score: int, user_id: int, lang_id: int, diff_id: int
+        self, score: int, user_id: int, lang_id: int
     ) -> int:
         """
         ユーザーのスコアよりも高いスコアの数を数え、ランキング位置を決定します。
@@ -284,13 +272,11 @@ class GetUserRankingView(BaseView):
             score (int): ユーザーのスコア。
             user_id (int): ユーザーID。
             lang_id (int): 言語ID。
-            diff_id (int): 難易度ID。
         Returns:
             int: ユーザーのランキング位置（1位からの順位）。
         """
         user_max_scores = Score.objects.filter(
             lang_id=lang_id,
-            diff_id=diff_id,
         ).values('user_id').annotate(max_score=Max('score'))
 
         higher_score_count = user_max_scores.filter(

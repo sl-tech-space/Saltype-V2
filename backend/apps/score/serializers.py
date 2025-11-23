@@ -11,7 +11,6 @@ class InsertScoreSerializer(BaseSerializer):
 
     user_id = serializers.UUIDField()  # ユーザーID
     lang_id = serializers.IntegerField()  # 言語ID
-    diff_id = serializers.IntegerField()  # 難易度ID
     typing_count = serializers.IntegerField(min_value=0)  # タイピング数
     accuracy = serializers.FloatField(min_value=0, max_value=1)  # 正確度
 
@@ -21,7 +20,6 @@ class InsertScoreSerializer(BaseSerializer):
         """
         attrs = self.check_user_id(attrs)
         attrs = self.check_lang_id(attrs)
-        attrs = self.check_diff_id(attrs)
 
         return attrs
 
@@ -35,7 +33,6 @@ class GetScoreSerializer(BaseSerializer):
     action = serializers.ChoiceField(choices=ACTION_CHOICES)  # アクションフィールド
     user_id = serializers.UUIDField()  # ユーザーID
     lang_id = serializers.IntegerField()  # 言語ID
-    diff_id = serializers.IntegerField()  # 難易度ID
 
     def validate(self, attrs):
         """
@@ -43,7 +40,6 @@ class GetScoreSerializer(BaseSerializer):
         """
         attrs = self.check_user_id(attrs)
         attrs = self.check_lang_id(attrs)
-        attrs = self.check_diff_id(attrs)
         attrs = self.check_action(attrs, self.ACTION_CHOICES)
 
         return attrs
@@ -56,7 +52,6 @@ class GetUserRankingSerializer(BaseSerializer):
 
     user_id = serializers.UUIDField()  # ユーザーID
     lang_id = serializers.IntegerField()  # 言語ID
-    diff_id = serializers.IntegerField()  # 難易度ID
     score = serializers.IntegerField()  # スコア
 
     def validate(self, attrs):
@@ -65,7 +60,6 @@ class GetUserRankingSerializer(BaseSerializer):
         """
         attrs = self.check_user_id(attrs)
         attrs = self.check_lang_id(attrs)
-        attrs = self.check_diff_id(attrs)
 
         return attrs
 

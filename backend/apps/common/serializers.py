@@ -1,7 +1,7 @@
 from datetime import date
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from apps.common.models import User, Lang, Diff
+from apps.common.models import User, Lang
 
 
 class BaseSerializer(serializers.Serializer):
@@ -63,20 +63,6 @@ class BaseSerializer(serializers.Serializer):
         """
         return self.check_existence(
             attrs, "lang_id", Lang, "指定された言語は存在しません。", "lang"
-        )
-
-    def check_diff_id(self, attrs):
-        """
-        難易度IDの存在を確認します。
-
-        Args:
-            attrs (dict): バリデーション対象のデータ。
-
-        Returns:
-            dict: 更新されたattrs。
-        """
-        return self.check_existence(
-            attrs, "diff_id", Diff, "指定された難易度は存在しません。", "diff"
         )
 
     def check_date(self, attrs):

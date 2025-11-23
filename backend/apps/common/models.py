@@ -124,31 +124,6 @@ class Lang(models.Model):
         db_table = "m_lang"
 
 
-class Diff(models.Model):
-    """
-    難易度マスタテーブル定義
-
-    Attributes:
-        diff_id (AutoField): 難易度ID。
-        diff (CharField): 難易度
-        created_at (DateTimeField): 作成日時
-        updated_at (DateTimeField): 更新日時
-        del_flg (BooleanField): 削除フラグ
-
-    :return: 難易度
-    :rtype: str
-    """
-
-    diff_id = models.AutoField(primary_key=True)
-    diff = models.CharField(max_length=50)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    del_flg = models.BooleanField(default=False)
-
-    class Meta:
-        db_table = "m_diff"
-
-
 class Rank(models.Model):
     """
     ランクマスタテーブル定義
@@ -198,7 +173,6 @@ class Score(models.Model):
     )
     score = models.IntegerField(default=0)
     lang = models.ForeignKey("Lang", on_delete=models.SET_NULL, null=True, blank=True)
-    diff = models.ForeignKey("Diff", on_delete=models.SET_NULL, null=True, blank=True)
     typing_count = models.IntegerField(default=0)
     accuracy = models.FloatField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

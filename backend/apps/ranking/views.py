@@ -20,7 +20,6 @@ class GetRankingView(BaseView):
             validated_data (dict): 検証済みのリクエストデータ。
                 - date (date, optional): 日別ランキング取得時の日付
                 - lang_id (int): 言語ID
-                - diff_id (int): 難易度ID
                 - limit (int): 取得件数
         Returns:
             dict: ランキングデータを含むレスポンス
@@ -32,9 +31,8 @@ class GetRankingView(BaseView):
         """
         target_date = validated_data.get("date")
         lang_id = validated_data.get("lang_id")
-        diff_id = validated_data.get("diff_id")
         limit = validated_data.get("limit")
-        ranking_data = self.get_ranking_data(lang_id, diff_id, limit, target_date)
+        ranking_data = self.get_ranking_data(lang_id, limit, target_date)
         return {
             "status": "success",
             "data": [
@@ -48,14 +46,13 @@ class GetRankingView(BaseView):
         }
         
     def get_ranking_data(
-        self, lang_id: int, diff_id: int, limit: int, target_date: date = None
+        self, lang_id: int, limit: int, target_date: date = None
     ) -> list[Score]:
         """
         ランキングデータを取得します。
         ユーザーごとの最高スコアのみを返します。
         Args:
             lang_id (int): 言語ID
-            diff_id (int): 難易度ID
             limit (int): 取得件数
             target_date (date, optional): 日別ランキング取得時の日付
         Returns:
@@ -63,7 +60,6 @@ class GetRankingView(BaseView):
         """
         filter_kwargs = {
             "lang_id": lang_id,
-            "diff_id": diff_id,
         }
         if target_date:
             filter_kwargs["created_at__date"] = target_date
