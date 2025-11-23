@@ -38,3 +38,7 @@ typing_english_prompt: |
   No empty lines between sentences.
   No numbers or bullet points at the start of lines.
   Start directly with the sentence content.
+
+translation_prompt: |
+  以下の英文を自然な日本語に翻訳してください。
+  出力には翻訳された日本語のみを含めてください。余計な説明や引用符は含めないでください。

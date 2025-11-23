@@ -29,6 +29,8 @@ class EnglishText(models.Model):
 
     id = models.BigAutoField(primary_key=True)
     content = models.TextField(help_text="生成された英語文章")
+    meaning = models.TextField(blank=True, default="", help_text="英語文章の和訳")
+    is_translated = models.BooleanField(default=False, help_text="翻訳済みかどうか")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

@@ -146,6 +146,15 @@ class DjangoJobScheduler:
 
         self.scheduler.add_job(
             func=self.run_django_command,
+            trigger=CronTrigger(minute="15,35,55"),
+            args=(["translate_english_text_job"], "translate_english_text_job"),
+            id="translate_english_text_job",
+            name="英語翻訳ジョブ",
+            replace_existing=True,
+        )
+
+        self.scheduler.add_job(
+            func=self.run_django_command,
             trigger=CronTrigger(hour=2, minute=0),
             args=(["partition_textpairs", "--all"], "partition_textpairs"),
             id="partition_textpairs",
@@ -190,6 +199,7 @@ def main() -> None:
     logger.info(
         "  - 英語AIテキスト生成ジョブ (generate_english_text_job) : 2,12,22,32,42,52分"
     )
+    logger.info("  - 英語翻訳ジョブ (translate_english_text_job) : 15,35,55分")
     logger.info("  - テキストペア分割ジョブ (partition_textpairs) : 毎日 2:00")
     logger.info("  - 日次スコアメール送信ジョブ (send_daily_scores_job) : 毎日 19:00")
 

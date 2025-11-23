@@ -98,12 +98,16 @@ class GetRandomTextPairView(BaseView):
         try:
             data_list = []
             if str(lang_id) == "2":  # 英語
-                english_texts = _get_random_records(EnglishText, count=count)
+                # 翻訳済みの英語文章を取得
+                english_texts = _get_random_records(
+                    EnglishText, count=count, filter_kwargs={"is_translated": True}
+                )
                 data_list = [
                     {
                         "id": text.id,
                         "kanji": text.content,
                         "hiragana": text.content,
+                        "meaning": text.meaning,
                     }
                     for text in english_texts
                 ]
